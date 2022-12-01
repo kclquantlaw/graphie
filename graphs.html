@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+text {
+  font-family: sans-serif;
+  font-size: 11px;
+}
+
+</style>
+<svg  width="2300" height="1800"></svg>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+// Handmade legend
+svg.append("circle").attr("cx",10).attr("cy",10).attr("r", 5).style("fill", "#1f77b4")
+svg.append("circle").attr("cx",10).attr("cy",30).attr("r", 5).style("fill", "#aec7e8")
+svg.append("circle").attr("cx",10).attr("cy",50).attr("r", 5).style("fill", "#ff7f0e")
+svg.append("circle").attr("cx",10).attr("cy",70).attr("r", 5).style("fill", "#ffbb78")
+svg.append("circle").attr("cx",10).attr("cy",90).attr("r", 5).style("fill", "#2ca02c")
+svg.append("circle").attr("cx",10).attr("cy",110).attr("r", 5).style("fill", "#98df8a")
+svg.append("text").attr("x", 20).attr("y", 10).text("Part 1 (1-54)").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 20).attr("y", 30).text("Part 2 (55-78)").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 20).attr("y", 50).text("Part 3 (79-100)").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 20).attr("y", 70).text("Part 4 (101-147)").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 20).attr("y", 90).text("Part 6 (179-228)").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 20).attr("y", 110).text("Part 7 (229-270)").style("font-size", "15px").attr("alignment-baseline","middle")
+
+svg.append("circle").attr("cx",210).attr("cy",10).attr("r", 5).style("fill", "#9467bd")
+svg.append("text").attr("x", 220).attr("y", 10).text("Housing Act 1985").style("font-size", "15px").attr("alignment-baseline","middle")
+
+svg.append("circle").attr("cx",210).attr("cy",30).attr("r", 5).style("fill", "#d62728")
+svg.append("text").attr("x", 220).attr("y", 30).text("Housing Act 1996").style("font-size", "15px").attr("alignment-baseline","middle")
+
+svg.append("circle").attr("cx",210).attr("cy",50).attr("r", 5).style("fill", "#c5b0d5")
+svg.append("text").attr("x", 220).attr("y", 50).text("Housing Act 1988").style("font-size", "15px").attr("alignment-baseline","middle")
+
+//add encompassing group for the zoom 
+var g = svg.append("g")
+    .attr("class", "everything");
+
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+   // .force("charge", d3.forceManyBody())
+    .force("charge", d3.forceManyBody().strength(-100))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+d3.json("miserables.json", function(error, graph) {
+  if (error) throw error;
+
+  var link = svg.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph.links)
+    .enter().append("line")
+      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+  var node = svg.append("g")
+      .attr("class", "nodes")
+    .selectAll("g")
+    .data(graph.nodes)
+    .enter().append("g")
+
+  var circles = node.append("circle")
+    .attr("r", 5)
+    .attr("fill", function(d) { return color(d.group); })
+	//.attr("r", function(d){ return (d.influence!=0)?(d.influence/2>5 ? d.influence/2 : 5):50; });
+
+  // Create a drag handler and append it to the node object instead
+  var drag_handler = d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
+
+  drag_handler(node);
+  
+  var zoom_handler = d3.zoom()
+    .on("zoom", zoom_actions);
+
+zoom_handler(svg);     
+
+  var lables = node.append("text")
+     .text(function(d) {
+		if(d.id.length<=3)
+			return d.id;
+		else{
+		    if(d.id=='Housing Act 1988' || d.id=='Interpratation Act 1978')
+				label= d.id;
+			else{
+				if(d.id.indexOf(",")!=-1)
+					label=d.id.substring(0,d.id.indexOf(","));
+				else
+				    label=d.id;
+
+			}
+			return label;
+			}
+      })
+      .attr('x', 6)
+      .attr('y', 3);
+	//  .attr("font-size", function(d){ return d.influence*1.5>1? d.influence*1.5: 100; });
+
+  node.append("title")
+      .text(function(d) {  
+		if(d.id.length<=3)
+			return d.title;
+		else{
+			
+			return d.id;
+		}
+	   });
+	  
+node.on("click", function(d) {
+  // alert("Hello!")
+})
+
+
+  simulation
+      .nodes(graph.nodes)
+      .on("tick", ticked);
+
+  simulation.force("link")
+      .links(graph.links);
+	  
+	  
+title = svg.selectAll("text.title")    
+     .data(nodes);
+
+title.enter()
+    .append("id") //In your code you used title instead of text
+    .attr("class", "title")
+    .text(function(d) { return d.name; });
+
+title.exit().remove();
+
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node
+        .attr("transform", function(d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        })
+  }
+});
+
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+//Zoom functions 
+function zoom_actions(){
+    g.attr("transform", d3.event.transform)
+}
+
+
+
+</script>

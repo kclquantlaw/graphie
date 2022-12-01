@@ -1,0 +1,172 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+html{
+	scroll-behavior: smooth;
+}
+
+p {
+  font-family: 'Lora', serif;;
+}
+aside > p {font-size: 0.9em;}
+
+b, strong {
+  font-weight: 500;
+}
+
+.navbar-brand {
+    font-family: 'Lora', serif;
+    font-weight: 400;
+    font-size: 1.5em;
+}
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255,255,255,.8);
+}
+
+a {color: #3ec2b4;}
+a:hover, a:focus {
+  color: #555;
+}
+
+/* Set sidebar */
+#sidebar, #document {
+  z-index: 3;
+  min-height: 100vh;
+  -webkit-transition: margin .5s;
+  transition: margin .5s;
+  overflow-y: visible; 
+  -webkit-box-shadow: 0 4px 12px rgba(0,0,0,.19);
+  box-shadow: 0 4px 12px rgba(0,0,0,.19);
+}
+
+#sidebar.fold {
+  margin-left: -19vw;
+}
+#document.fold {
+  margin-right: -29vw;
+}
+#content {
+  width: 100%;
+  min-height: 100vh;
+  transition: all 0.3s;
+  margin-top: 50px;
+}
+
+.sidebar {
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  max-width: 22%;
+  min-width: 21%;
+  margin-top: 50px;
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 48px;
+  height: calc(100vh - 48px);
+  padding-top: 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar-sticky {
+  position: -webkit-sticky;
+    position: sticky;
+}
+
+
+/* Sidebar Hide and Button      */
+
+button#sidebarCollapse {
+  color: #3ec2b4;
+  /* position: absolute;
+  top: 20px;
+  right: -9%;
+  overflow: visible; */
+  float: right;
+  z-index: 100;
+  padding: .5em .4em;
+  border-radius: 0;
+  -webkit-box-shadow: 0 3px 12px rgba(0,0,0,.19);
+  box-shadow: 0 3px 12px rgba(0,0,0,.19);
+  border: 1px solid #c4c7cc;
+}
+button#documentCollapse {
+  color: #056eae;
+  position: absolute;
+  top: 20px;
+  left: -6%;
+  overflow: visible;
+  z-index: -1;
+  padding: 1em .35em;
+  border-radius: 0;
+  -webkit-box-shadow: 0 3px 12px rgba(0,0,0,.19);
+  box-shadow: 0 3px 9px rgba(0,0,0,.19);
+  border: 1px solid #c4c7cc;
+}
+
+/* Aside settings */
+
+#document {
+  max-width: 35%;
+  min-width: 30%;
+}
+
+  .list-group-item:first-child {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+  .list-group-item:first-child, .list-group-item:last-child {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+  }
+      
+      /* Set black background color, white text and some padding */
+      footer {
+        background-color: #555;
+        color: white;
+        padding: 15px;
+      }
+/* Sidebar */
+
+      @media (max-width: 768px) {
+        #sidebar {
+            margin-left: -19vw;
+        }
+        #document {
+          margin-left: -29vw;
+        }
+        #sidebar.fold, #document.fold {
+            margin-left: 0;
+        }
+    }
+
+h4{
+
+margin-bottom: .6666666667rem;
+font-size: 1em;
+line-height: 1.3333333333em;
+	
+}
+
+.leaf {
+    padding-left: .8888888889rem;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+text {
+  font-family: sans-serif;
+  font-size: 10px;
+}
+
