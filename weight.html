@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,7 +107,7 @@ d3.json(file, function(error, graph) {
 
   var circles = node.append("circle")
   	.attr("class", function(d) { return d.id; })
-    .attr("r", function(d){ return ((d.influence>0)?1.15*d.influence: 3); })
+    .attr("r", function(d){ return ((d.nodeSize>0)?1.15*d.nodeSize: 3); })
     .attr("fill", function(d) { return color(d.group); });
 
 
